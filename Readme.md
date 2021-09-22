@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Павел Данилец](https://up.htmlacademy.ru/javascript/24/user/1096051).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Хабиров](https://htmlacademy.ru/profile/alex_khab).
 
 ---
 
