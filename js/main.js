@@ -1,6 +1,6 @@
 const getRandomNumberInRange = (from, to) => {
   if (from >= to || from < 0) {
-    throw new Error('Неправильные диапозон');
+    throw new Error('Неправильные диапазон');
   }
 
   const rand = from + Math.random() * (to - from + 1);
@@ -12,7 +12,7 @@ console.log(getRandomNumberInRange(-2, 3));
 
 const getRandomNumberInRangeFloat = (from, to, floatingPoint = 0) => {
   if (from >= to || from < 0) {
-    throw new Error('Неправильные диапозон');
+    throw new Error('Неправильные диапазон');
   }
 
   const rand = from + Math.random() * (to - from);
