@@ -1,5 +1,5 @@
 const getRandomNumberInRange = (from, to) => {
-  if (from >= to) {
+  if (from >= to || from < 0) {
     throw new Error('Неправильные диапозон');
   }
 
@@ -7,11 +7,11 @@ const getRandomNumberInRange = (from, to) => {
   return Number(Math.floor(rand));
 };
 // eslint-disable-next-line no-console
-console.log(getRandomNumberInRange(1, 3));
+console.log(getRandomNumberInRange(-2, 3));
 
 
 const getRandomNumberInRangeFloat = (from, to, floatingPoint = 0) => {
-  if (from >= to) {
+  if (from >= to || from < 0) {
     throw new Error('Неправильные диапозон');
   }
 
