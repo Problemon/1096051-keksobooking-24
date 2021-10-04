@@ -55,9 +55,7 @@ const createAnnouncement = () => {
       const lng = this.location.lng;
       this.offer.address = `${lat}, ${lng}`;
     },
-    author: {
-      avatar: `img/avatars/user${this}.png`,
-    },
+    author: {},
     offer: {
       title: 'Sell annoucement',
       features: getRandomArrayOfArray(['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']),
