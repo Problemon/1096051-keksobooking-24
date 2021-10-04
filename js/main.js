@@ -6,10 +6,18 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
+const MAX_ANNOUNCMENT_AMOUNT = 10;
+const COORDINATE = {
+  MIN: {
+    LAT: 35.65000,
+    LNG: 139.70000,
+  },
+  MAX: {
+    LAT: 35.70000,
+    LNG: 139.80000,
+  },
+};
 
-
-// Функция взята из интернета и доработана
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomNumberInRange = (first, second) => {
   const lower = Math.ceil(Math.min(Math.abs(first), Math.abs(second)));
   const upper = Math.floor(Math.max(Math.abs(first), Math.abs(second)));
@@ -28,7 +36,6 @@ const getRandomNumberInRangeFloat = (first, second, digits = 0) => {
   return result.toFixed(digits);
 };
 
-
 const getRandomElementOfArray = (array) => array[getRandomNumberInRange(0, array.length - 1)];
 
 const getRandomArrayOfArray = (array) => {
@@ -36,47 +43,26 @@ const getRandomArrayOfArray = (array) => {
   return array.slice(0, randomIndex);
 };
 
+const createAnnouncement = (index) => {
+  const randomLat = getRandomNumberInRangeFloat(COORDINATE.MIN.LAT, COORDINATE.MAX.LAT, 5);
+  const randomLng = getRandomNumberInRangeFloat(COORDINATE.MIN.LNG, COORDINATE.MAX.LNG, 5);
+  const avatarIndex = index.toString().padStart(2, 0);
 
-const getArrayWithNumbers = (amount) => {
-  const arrayNumbers = [];
-  for (let index = 0; index < amount; index += 1) {
-    let number = index + 1;
-    if (number < 10) {
-      number = `0${number}`; // Прибавляем 0 к цивре пока чило однозначное '1 = 01'
-    }
-    arrayNumbers[index] = String(number);
-  }
-  return arrayNumbers;
-};
-
-const numbersOfAvatar = getArrayWithNumbers(10);
-const getNumberOfAvatar = () => {
-  const randomIndex = getRandomNumberInRange(0, numbersOfAvatar.length - 1);
-  const numberOfAvatar = numbersOfAvatar.splice(randomIndex, 1);
-  return numberOfAvatar;
-};
-
-const createAnnouncement = () => {
-  const randomLat   =   getRandomNumberInRangeFloat(35.65000, 35.70000, 5);
-  const randomLng   =   getRandomNumberInRangeFloat(139.70000, 139.80000, 5);
-  const randomPrice =   getRandomNumberInRange(0, 10);
-  const randomRooms =   getRandomNumberInRange(0, 10);
-  const randomQuests =  getRandomNumberInRange(0, 10);
-  const announcement = {
+  return {
     author: {
-      avatar: `img/avatars/user${getNumberOfAvatar()}.png`,
+      avatar: `img/avatars/user${avatarIndex}.png`,
     },
     offer: {
-      title:  'Sell annoucement',
+      title: 'Sell annoucement',
       address: `${randomLat}, ${randomLng}`,
       features: getRandomArrayOfArray(FEATURES),
-      photos:   getRandomArrayOfArray(PHOTOS),
-      checkin:  getRandomElementOfArray(TIME),
+      photos: getRandomArrayOfArray(PHOTOS),
+      checkin: getRandomElementOfArray(TIME),
       checkout: getRandomElementOfArray(TIME),
-      type:     getRandomElementOfArray(TYPES),
-      price:    randomPrice,
-      rooms:    randomRooms,
-      quests:   randomQuests,
+      type: getRandomElementOfArray(TYPES),
+      price: getRandomNumberInRange(0, MAX_ANNOUNCMENT_AMOUNT),
+      rooms: getRandomNumberInRange(0, MAX_ANNOUNCMENT_AMOUNT),
+      quests: getRandomNumberInRange(0, MAX_ANNOUNCMENT_AMOUNT),
       description: 'Best place',
     },
     location: {
@@ -84,13 +70,10 @@ const createAnnouncement = () => {
       lng: randomLng,
     },
   };
-
-  return announcement;
 };
 
-const getArrayObject = (number) => {
-  const arrayAnnouncements = Array.from({length: number}, createAnnouncement);
-  return arrayAnnouncements;
-};
+const generateAnnouncements = (number) => Array.from({length: number}, (_, index) => (
+  createAnnouncement(index + 1)),
+);
 // eslint-disable-next-line no-console
-console.log(getArrayObject(10));
+console.log(generateAnnouncements(MAX_ANNOUNCMENT_AMOUNT));
