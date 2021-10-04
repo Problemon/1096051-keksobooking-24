@@ -44,41 +44,49 @@ const getArrayWithNumbers = (amount) => {
 const numbersOfAvatar = getArrayWithNumbers(10);
 
 const createAnnouncement = () => {
+  const FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  const TIME = ['12:00', '13:00', '14:00'];
+  const TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
+
+  const randomLat = getRandomNumberInRangeFloat(35.65000, 35.70000, 5);
+  const randomLng = getRandomNumberInRangeFloat(139.70000, 139.80000, 5);
+  const randomPrice = getRandomNumberInRange(0, 10);
+  const randomRooms = getRandomNumberInRange(0, 10);
+  const randomQuests = getRandomNumberInRange(0, 10);
+  const randomPhotos = getRandomArrayOfArray([
+    'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
+    'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
+    'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
+  ]);
+
+  const createAvatar = () => {
+    const randomIndex = getRandomNumberInRange(0, numbersOfAvatar.length - 1);
+    const numberOfAvatar = numbersOfAvatar.splice(randomIndex, 1);
+    return numberOfAvatar;
+  };
+
   const announcement = {
-    createAvatar() {
-      const randomIndex = getRandomNumberInRange(0, numbersOfAvatar.length - 1);
-      const numberOfAvatar = numbersOfAvatar.splice(randomIndex, 1);
-      this.author.avatar = `img/avatars/user${numberOfAvatar}.png`;
+    author: {
+      avatar: `img/avatars/user${createAvatar()}.png`,
     },
-    createAddress() {
-      const lat = this.location.lat;
-      const lng = this.location.lng;
-      this.offer.address = `${lat}, ${lng}`;
-    },
-    author: {},
     offer: {
-      title: 'Sell annoucement',
-      features: getRandomArrayOfArray(['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']),
-      checkin:  getRandomElementOfArray(['12:00', '13:00', '14:00']),
-      checkout: getRandomElementOfArray(['12:00', '13:00', '14:00']),
-      type:     getRandomElementOfArray(['palace', 'flat', 'house', 'bungalow', 'hotel']),
-      price:    getRandomNumberInRange(0, 10),
-      rooms:    getRandomNumberInRange(0, 10),
-      quests:   getRandomNumberInRange(0, 10),
+      title:  'Sell annoucement',
+      address: `${randomLat}, ${randomLng}`,
+      features: getRandomArrayOfArray(FEATURES),
+      checkin:  getRandomElementOfArray(TIME),
+      checkout: getRandomElementOfArray(TIME),
+      type:     getRandomElementOfArray(TYPES),
+      price:    randomPrice,
+      rooms:    randomRooms,
+      quests:   randomQuests,
       description: 'Best place',
-      photos:   getRandomArrayOfArray([
-        'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-        'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-        'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
-      ]),
+      photos:   randomPhotos,
     },
     location: {
-      lat: getRandomNumberInRangeFloat(35.65000, 35.70000, 5),
-      lng: getRandomNumberInRangeFloat(139.70000, 139.80000, 5),
+      lat: randomLat,
+      lng: randomLng,
     },
   };
-  announcement.createAvatar();
-  announcement.createAddress();
 
   return announcement;
 };
