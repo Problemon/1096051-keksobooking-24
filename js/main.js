@@ -44,7 +44,7 @@ const getArrayWithNumbers = (amount) => {
 const numbersOfAvatar = getArrayWithNumbers(10);
 
 const createAnnouncement = () => {
-  const announce = {
+  const announcement = {
     createAvatar() {
       const randomIndex = getRandomNumberInRange(0, numbersOfAvatar.length - 1);
       const numberOfAvatar = numbersOfAvatar.splice(randomIndex, 1);
@@ -79,10 +79,10 @@ const createAnnouncement = () => {
       lng: getRandomNumberInRangeFloat(139.70000, 139.80000, 5),
     },
   };
-  announce.createAvatar();
-  announce.createAddress();
+  announcement.createAvatar();
+  announcement.createAddress();
 
-  return announce;
+  return announcement;
 };
 
 const getArrayObject = (number) => {
