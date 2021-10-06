@@ -1,3 +1,10 @@
+import {
+  getRandomNumberInRange,
+  getRandomNumberInRangeFloat,
+  getRandomElementOfArray,
+  getRandomArrayOfArray
+} from './random.js';
+
 const FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 const TIME = ['12:00', '13:00', '14:00'];
 const TYPES = ['palace', 'flat', 'house', 'bungalow', 'hotel'];
@@ -16,31 +23,6 @@ const COORDINATE = {
     LAT: 35.70000,
     LNG: 139.80000,
   },
-};
-
-const getRandomNumberInRange = (first, second) => {
-  const lower = Math.ceil(Math.min(Math.abs(first), Math.abs(second)));
-  const upper = Math.floor(Math.max(Math.abs(first), Math.abs(second)));
-
-  const result = Math.random() * (upper - lower + 1) + lower;
-
-  return Math.floor(result);
-};
-
-const getRandomNumberInRangeFloat = (first, second, digits = 0) => {
-  const lower = Math.min(Math.abs(first), Math.abs(second));
-  const upper = Math.max(Math.abs(first), Math.abs(second));
-
-  const result = Math.random() * (upper - lower) + lower;
-
-  return result.toFixed(digits);
-};
-
-const getRandomElementOfArray = (array) => array[getRandomNumberInRange(0, array.length - 1)];
-
-const getRandomArrayOfArray = (array) => {
-  const randomIndex = getRandomNumberInRange(1, array.length);
-  return array.slice(0, randomIndex);
 };
 
 const createAnnouncement = (index) => {
@@ -75,5 +57,7 @@ const createAnnouncement = (index) => {
 const generateAnnouncements = (number) => Array.from({length: number}, (_, index) => (
   createAnnouncement(index + 1)),
 );
+
 // eslint-disable-next-line no-console
 console.log(generateAnnouncements(MAX_ANNOUNCMENT_AMOUNT));
+
