@@ -43,7 +43,7 @@ const createAnnouncement = (index, announcments) => {
       type: getRandomElementOfArray(TYPES),
       price: getRandomNumberInRange(0, announcments),
       rooms: getRandomNumberInRange(0, announcments),
-      quests: getRandomNumberInRange(0, announcments),
+      guests: getRandomNumberInRange(0, announcments),
       description: 'Best place',
     },
     location: {

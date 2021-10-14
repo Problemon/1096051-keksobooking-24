@@ -1,5 +1,11 @@
 import { generateAnnouncements } from './announcment.js';
+import { createCardList } from './element-announcment.js';
 
-// eslint-disable-next-line no-console
-console.log(generateAnnouncements(10));
+const NUMBER_OFFERS = 10;
+
+const mapCanvas = document.querySelector('#map-canvas');
+const arrayAnnouncments = generateAnnouncements(NUMBER_OFFERS);
+const cardList = createCardList(arrayAnnouncments);
+
+mapCanvas.appendChild(cardList[0]);
 
