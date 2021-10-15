@@ -45,7 +45,7 @@ export const createCardList = (offers) => {
       isEmpty = arrValue.some((value) => !value);
 
       if (isEmpty) {
-        elem.classList.add('visually-hidden');
+        elem.remove();
       } else {
         elem[property] = '';
         arrValue.forEach((value) => {
