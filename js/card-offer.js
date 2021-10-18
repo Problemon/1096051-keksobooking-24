@@ -22,8 +22,7 @@ const addFeatureElement = (feature, container) => {
   const className = 'popup__feature';
   const classFeature = `${className}--${feature}`;
 
-  featureElement.classList.add(className);
-  featureElement.classList.add(classFeature);
+  featureElement.classList.add(className, classFeature);
 
   container.appendChild(featureElement);
 };
@@ -74,7 +73,7 @@ export const createCard = (announcement) => {
   hideEmptyElement([rooms, ' комнаты для ', guests, ' гостей'], offerCapacity, 'textContent');
   hideEmptyElement(['Заезд после ', checkin, ', выезд до ', checkout], offerTime, 'textContent');
 
-  offerPhotosContainer.textContent = '';
+  offerPhotosContainer.innerHTML = '';
   photos.forEach((link) => addImage(link, offerPhotosContainer, offerImageTemplate));
 
   offerFeaturesContainer.innerHTML = '';
