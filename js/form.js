@@ -16,6 +16,8 @@ const mapFilters = mapFormFilter.querySelectorAll('fieldset, select');
 const adFormTitleInput = adForm.querySelector('.ad-form__title-input');
 const adFormPriceInput = adForm.querySelector('.ad-form__price-input');
 const adFormType = adForm.querySelector('.ad-form__type');
+const adFormRooms = adForm.querySelector('.ad-form__rooms');
+const adFormGuests = adForm.querySelector('.ad-form__guests');
 
 const checkValidityTitle = () => {
   const valueLength = adFormTitleInput.value.length;
@@ -59,10 +61,35 @@ const onTypeList = () => {
   adFormType.addEventListener('change', checkValidityPrice);
 };
 
+const checkValidityGuests = () => {
+  const rooms = Number(adFormRooms.value);
+  const guests = Number(adFormGuests.value);
+
+  if (guests > rooms) {
+    adFormGuests.setCustomValidity(`Максимум гостей ${rooms}`);
+  } else if (rooms === 100 && guests !== 0) {
+    adFormGuests.setCustomValidity('Не для гостей');
+  } else {
+    adFormGuests.setCustomValidity('');
+  }
+
+  adFormGuests.reportValidity();
+};
+
+const onGuestsList = () => {
+  adFormGuests.addEventListener('change', checkValidityGuests);
+};
+
+const onRoomsList = () => {
+  adFormRooms.addEventListener('change', checkValidityGuests);
+};
+
 const checkValidity = () => {
   onTitileInput();
   onPriceInput();
   onTypeList();
+  onGuestsList();
+  onRoomsList();
 };
 
 const changeStateElements = (elements, isDisabled) => {
