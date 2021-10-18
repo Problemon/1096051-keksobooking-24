@@ -10,5 +10,5 @@ const cardList = createCardList(arrayAnnouncements);
 
 changeStateForm(false);
 mapCanvas.appendChild(cardList[0]);
-setTimeout(() => changeStateForm(true), 5000);
+setTimeout(() => changeStateForm(true), 1000);
 

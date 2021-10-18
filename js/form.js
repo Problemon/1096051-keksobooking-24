@@ -1,7 +1,69 @@
+const MIN_LENGTH_TITLE = 30;
+const MAX_LENGTH_TITLE = 100;
+const MAX_PRICE = 1000000;
+const MIN_PRICE_LIST = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
+
 const adForm = document.querySelector('.ad-form');
 const adFieldsets = adForm.querySelectorAll('fieldset');
 const mapFormFilter = document.querySelector('.map__filters');
 const mapFilters = mapFormFilter.querySelectorAll('fieldset, select');
+const adFormTitleInput = adForm.querySelector('.ad-form__title-input');
+const adFormPriceInput = adForm.querySelector('.ad-form__price-input');
+const adFormType = adForm.querySelector('.ad-form__type');
+
+const checkValidityTitle = () => {
+  const valueLength = adFormTitleInput.value.length;
+
+  if (valueLength < MIN_LENGTH_TITLE) {
+    adFormTitleInput.setCustomValidity(`Минимум ${MIN_LENGTH_TITLE} символов, добавьте еще ${MIN_LENGTH_TITLE - valueLength} символа`);
+  } else if (valueLength > MAX_LENGTH_TITLE) {
+    adFormTitleInput.setCustomValidity(`Максимум ${MAX_LENGTH_TITLE} символов, удалите еще ${valueLength - MAX_LENGTH_TITLE} символа`);
+  } else {
+    adFormTitleInput.setCustomValidity('');
+  }
+
+  adFormTitleInput.reportValidity();
+};
+
+const onTitileInput = () => {
+  adFormTitleInput.addEventListener('input', checkValidityTitle);
+};
+
+
+const checkValidityPrice = () => {
+  const minPrice = MIN_PRICE_LIST[adFormType.value];
+  const price = adFormPriceInput.value;
+
+  if (price > MAX_PRICE) {
+    adFormPriceInput.setCustomValidity(`Макс цена ${MAX_PRICE}`);
+  } else if (price < minPrice) {
+    adFormPriceInput.setCustomValidity(`Мин цена ${minPrice}`);
+  } else {
+    adFormPriceInput.setCustomValidity('');
+  }
+
+  adFormPriceInput.reportValidity();
+};
+
+const onPriceInput = () => {
+  adFormPriceInput.addEventListener('input', checkValidityPrice);
+};
+
+const onTypeList = () => {
+  adFormType.addEventListener('change', checkValidityPrice);
+};
+
+const checkValidity = () => {
+  onTitileInput();
+  onPriceInput();
+  onTypeList();
+};
 
 const changeStateElements = (elements, isDisabled) => {
   elements.forEach((element) => element.disabled = isDisabled);
@@ -20,3 +82,5 @@ export const changeStateForm = (isActive) => {
     changeStateElements(mapFilters, true);
   }
 };
+
+checkValidity();
