@@ -8,6 +8,8 @@ const MIN_PRICE_LIST = {
   house: 5000,
   palace: 10000,
 };
+const MAX_ROOMS = 100;
+const NOT_FOR_GUESTS = 0;
 
 const adForm = document.querySelector('.ad-form');
 const adFieldsets = adForm.querySelectorAll('fieldset');
@@ -19,13 +21,17 @@ const adFormType = adForm.querySelector('.ad-form__type');
 const adFormRooms = adForm.querySelector('.ad-form__rooms');
 const adFormGuests = adForm.querySelector('.ad-form__guests');
 
-const checkValidityTitle = () => {
+const onClearInput = (evt) => {
+  evt.target.setCustomValidity('');
+};
+
+const onTitleChange = () => {
   const valueLength = adFormTitleInput.value.length;
 
   if (valueLength < MIN_LENGTH_TITLE) {
-    adFormTitleInput.setCustomValidity(`Минимум ${MIN_LENGTH_TITLE} символов, добавьте еще ${MIN_LENGTH_TITLE - valueLength} символа`);
+    adFormTitleInput.setCustomValidity(`Минимум ${MIN_LENGTH_TITLE} символов`);
   } else if (valueLength > MAX_LENGTH_TITLE) {
-    adFormTitleInput.setCustomValidity(`Максимум ${MAX_LENGTH_TITLE} символов, удалите еще ${valueLength - MAX_LENGTH_TITLE} символа`);
+    adFormTitleInput.setCustomValidity(`Максимум ${MAX_LENGTH_TITLE} символов`);
   } else {
     adFormTitleInput.setCustomValidity('');
   }
@@ -33,19 +39,15 @@ const checkValidityTitle = () => {
   adFormTitleInput.reportValidity();
 };
 
-const onTitileInput = () => {
-  adFormTitleInput.addEventListener('input', checkValidityTitle);
-};
 
-
-const checkValidityPrice = () => {
+const onPriceChange = () => {
   const minPrice = MIN_PRICE_LIST[adFormType.value];
   const price = adFormPriceInput.value;
 
   if (price > MAX_PRICE) {
-    adFormPriceInput.setCustomValidity(`Макс цена ${MAX_PRICE}`);
+    adFormPriceInput.setCustomValidity(`Максимальная цена ${MAX_PRICE}`);
   } else if (price < minPrice) {
-    adFormPriceInput.setCustomValidity(`Мин цена ${minPrice}`);
+    adFormPriceInput.setCustomValidity(`Минимальная цена ${minPrice}`);
   } else {
     adFormPriceInput.setCustomValidity('');
   }
@@ -53,50 +55,32 @@ const checkValidityPrice = () => {
   adFormPriceInput.reportValidity();
 };
 
-const onPriceInput = () => {
-  adFormPriceInput.addEventListener('input', checkValidityPrice);
-};
-
-const onTypeList = () => {
-  adFormType.addEventListener('change', checkValidityPrice);
-};
-
-const checkValidityGuests = () => {
+const onCapacityChange = () => {
   const rooms = Number(adFormRooms.value);
   const guests = Number(adFormGuests.value);
 
   if (guests > rooms) {
     adFormGuests.setCustomValidity(`Максимум гостей ${rooms}`);
-  } else if (rooms === 100 && guests !== 0) {
+    adFormRooms.setCustomValidity('');
+  } else if (guests === NOT_FOR_GUESTS && rooms !== MAX_ROOMS) {
+    adFormRooms.setCustomValidity(`Минимум ${MAX_ROOMS} комнат`);
+    adFormGuests.setCustomValidity('');
+  } else if (rooms === MAX_ROOMS && guests !== NOT_FOR_GUESTS) {
     adFormGuests.setCustomValidity('Не для гостей');
   } else {
+    adFormRooms.setCustomValidity('');
     adFormGuests.setCustomValidity('');
   }
 
+  adFormRooms.reportValidity();
   adFormGuests.reportValidity();
-};
-
-const onGuestsList = () => {
-  adFormGuests.addEventListener('change', checkValidityGuests);
-};
-
-const onRoomsList = () => {
-  adFormRooms.addEventListener('change', checkValidityGuests);
-};
-
-const checkValidity = () => {
-  onTitileInput();
-  onPriceInput();
-  onTypeList();
-  onGuestsList();
-  onRoomsList();
 };
 
 const changeStateElements = (elements, isDisabled) => {
   elements.forEach((element) => element.disabled = isDisabled);
 };
 
-export const changeStateForm = (isActive) => {
+const changeStateForm = (isActive) => {
   if (isActive) {
     adForm.classList.remove('ad-form--disabled');
     mapFormFilter.classList.remove('map__filters--disabled');
@@ -110,4 +94,16 @@ export const changeStateForm = (isActive) => {
   }
 };
 
-checkValidity();
+const setFormListeners = () => {
+  adFormTitleInput.addEventListener('change', onTitleChange);
+  adFormTitleInput.addEventListener('input', onClearInput);
+
+  adFormPriceInput.addEventListener('change', onPriceChange);
+  adFormPriceInput.addEventListener('input', onClearInput);
+
+  adFormType.addEventListener('change', onPriceChange);
+  adFormGuests.addEventListener('change', onCapacityChange);
+  adFormRooms.addEventListener('change', onCapacityChange);
+};
+
+export {changeStateForm, setFormListeners};
