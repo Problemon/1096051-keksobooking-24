@@ -23,6 +23,7 @@ const adFormGuests = adForm.querySelector('.ad-form__guests');
 const adFormCheckin = adForm.querySelector('.ad-form__checkin');
 const adFormCheckout = adForm.querySelector('.ad-form__checkout');
 
+
 const onClearInput = (evt) => {
   evt.target.setCustomValidity('');
 };
