@@ -20,6 +20,8 @@ const adFormPriceInput = adForm.querySelector('.ad-form__price-input');
 const adFormType = adForm.querySelector('.ad-form__type');
 const adFormRooms = adForm.querySelector('.ad-form__rooms');
 const adFormGuests = adForm.querySelector('.ad-form__guests');
+const adFormCheckin = adForm.querySelector('.ad-form__checkin');
+const adFormCheckout = adForm.querySelector('.ad-form__checkout');
 
 const onClearInput = (evt) => {
   evt.target.setCustomValidity('');
@@ -43,6 +45,8 @@ const onTitleChange = () => {
 const onPriceChange = () => {
   const minPrice = MIN_PRICE_LIST[adFormType.value];
   const price = adFormPriceInput.value;
+
+  adFormPriceInput.placeholder = minPrice;
 
   if (price > MAX_PRICE) {
     adFormPriceInput.setCustomValidity(`Максимальная цена ${MAX_PRICE}`);
@@ -76,6 +80,14 @@ const onCapacityChange = () => {
   adFormGuests.reportValidity();
 };
 
+const onCheckinChange = () => {
+  adFormCheckout.value = adFormCheckin.value;
+};
+
+const onCheckoutChange = () => {
+  adFormCheckin.value = adFormCheckout.value;
+};
+
 const changeStateElements = (elements, isDisabled) => {
   elements.forEach((element) => element.disabled = isDisabled);
 };
@@ -104,6 +116,8 @@ const setFormListeners = () => {
   adFormType.addEventListener('change', onPriceChange);
   adFormGuests.addEventListener('change', onCapacityChange);
   adFormRooms.addEventListener('change', onCapacityChange);
+  adFormCheckin.addEventListener('change', onCheckinChange);
+  adFormCheckout.addEventListener('change', onCheckoutChange);
 };
 
 export {changeStateForm, setFormListeners};

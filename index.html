@@ -105,16 +105,16 @@
         </fieldset>
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input class="ad-form__price-input" id="price" name="price" type="number" placeholder="5000" required>
+          <input class="ad-form__price-input" id="price" name="price" type="number" placeholder="1000" required>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--time">
           <label class="ad-form__label" for="timein">Время заезда и выезда</label>
-          <select id="timein" name="timein">
+          <select class="ad-form__checkin" id="timein" name="timein">
             <option value="12:00" selected>После 12</option>
             <option value="13:00">После 13</option>
             <option value="14:00">После 14</option>
           </select>
-          <select id="timeout" name="timeout" title="Time to go out">
+          <select class="ad-form__checkout" id="timeout" name="timeout" title="Time to go out">
             <option value="12:00" selected>Выезд до 12</option>
             <option value="13:00">Выезд до 13</option>
             <option value="14:00">Выезд до 14</option>
