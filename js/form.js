@@ -91,7 +91,7 @@ const onCheckoutChange = () => {
 };
 
 const changeAddress = (lat, lng) => {
-  adFormAddress.value = `lat: ${lat.toFixed(5)} lng: ${lng.toFixed(5)}`;
+  adFormAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 };
 
 const changeStateElements = (elements, isDisabled) => {
