@@ -1,14 +1,16 @@
 import { generateAnnouncements } from './announcement.js';
 import { createCardList } from './card-offer.js';
-import { changeStateForm, setFormListeners } from './form.js';
+import { createMarker } from './map.js';
 
 const NUMBER_OFFERS = 10;
 
-const mapCanvas = document.querySelector('#map-canvas');
 const arrayAnnouncements = generateAnnouncements(NUMBER_OFFERS);
 const cardList = createCardList(arrayAnnouncements);
 
-changeStateForm(false);
-mapCanvas.appendChild(cardList[0]);
-setTimeout(() => changeStateForm(true), 1000);
-setFormListeners();
+
+arrayAnnouncements.forEach((elem, index) => {
+  const {lat, lng} = elem.location;
+  createMarker(lat, lng, cardList[index], true);
+});
+
+createMarker(35.6837, 139.76503);
