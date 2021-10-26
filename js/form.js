@@ -11,13 +11,14 @@ const MIN_PRICE_LIST = {
 const MAX_ROOMS = 100;
 const NOT_FOR_GUESTS = 0;
 
-const adForm = document.querySelector('.ad-form');
-const adFieldsets = adForm.querySelectorAll('fieldset');
 const mapFormFilter = document.querySelector('.map__filters');
 const mapFilters = mapFormFilter.querySelectorAll('fieldset, select');
+const adForm = document.querySelector('.ad-form');
+const adFieldsets = adForm.querySelectorAll('fieldset');
 const adFormTitleInput = adForm.querySelector('.ad-form__title-input');
 const adFormPriceInput = adForm.querySelector('.ad-form__price-input');
 const adFormType = adForm.querySelector('.ad-form__type');
+const adFormAddress = adForm.querySelector('.ad-form__address');
 const adFormRooms = adForm.querySelector('.ad-form__rooms');
 const adFormGuests = adForm.querySelector('.ad-form__guests');
 const adFormCheckin = adForm.querySelector('.ad-form__checkin');
@@ -89,6 +90,10 @@ const onCheckoutChange = () => {
   adFormCheckin.value = adFormCheckout.value;
 };
 
+const changeAddress = (lat, lng) => {
+  adFormAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+};
+
 const changeStateElements = (elements, isDisabled) => {
   elements.forEach((element) => element.disabled = isDisabled);
 };
@@ -121,4 +126,4 @@ const setFormListeners = () => {
   adFormCheckout.addEventListener('change', onCheckoutChange);
 };
 
-export {changeStateForm, setFormListeners};
+export {changeStateForm, setFormListeners, changeAddress};
