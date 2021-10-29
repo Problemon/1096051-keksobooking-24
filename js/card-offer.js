@@ -34,7 +34,7 @@ const addImage = (link, container, template) => {
   container.appendChild(imageElement);
 };
 
-export const createCard = (announcement) => {
+const createCard = (announcement) => {
   const cardElement = cardTemplate.cloneNode(true);
   const offerAvatar = cardElement.querySelector('.popup__avatar');
   const offerTitle = cardElement.querySelector('.popup__title');
@@ -74,12 +74,18 @@ export const createCard = (announcement) => {
   hideEmptyElement(['Заезд после ', checkin, ', выезд до ', checkout], offerTime, 'textContent');
 
   offerPhotosContainer.innerHTML = '';
-  photos.forEach((link) => addImage(link, offerPhotosContainer, offerImageTemplate));
+  if (photos) {
+    photos.forEach((link) => addImage(link, offerPhotosContainer, offerImageTemplate));
+  }
 
   offerFeaturesContainer.innerHTML = '';
-  features.forEach((item) => addFeatureElement(item, offerFeaturesContainer));
+  if (features) {
+    features.forEach((item) => addFeatureElement(item, offerFeaturesContainer));
+  }
 
   return cardElement;
 };
 
-export const createCardList = (offers) => offers.map(createCard);
+const createCardList = (offers) => offers.map(createCard);
+
+export { createCard, createCardList };

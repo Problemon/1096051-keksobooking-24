@@ -1,4 +1,4 @@
-import { changeStateForm, setFormListeners, changeAddress } from './form.js';
+import { changeStateForm, changeAddress } from './form.js';
 import { createCard } from './card-offer.js';
 
 const MAP = {
@@ -44,12 +44,25 @@ const DEFAULT_MARKER_ICON = L.icon({
   iconAnchor: MARKER.DEFAULT.getAnchor(),
 });
 
+changeStateForm(false);
+
 const onMapLoad = () => {
   changeStateForm(true);
-  setFormListeners();
 };
 
-const createMainMarker = (markerLat, markerLng, map) => {
+const map = L.map('map-canvas')
+  .on('load', onMapLoad);
+
+L.tileLayer(
+  TILE_MAP,
+  {
+    attribution: MAP_COPYRIGHT,
+  },
+).addTo(map);
+
+const markersGroup = L.layerGroup().addTo(map);
+
+const createMainMarker = (markerLat, markerLng, layer) => {
   const marker = L.marker(
     {
       lat: markerLat,
@@ -59,7 +72,7 @@ const createMainMarker = (markerLat, markerLng, map) => {
       draggable: true,
       icon: MAIN_MARKER_ICON,
     },
-  ).addTo(map);
+  ).addTo(layer);
 
   const onMarkerMove = () => {
     const {lat, lng} = marker.getLatLng();
@@ -71,7 +84,7 @@ const createMainMarker = (markerLat, markerLng, map) => {
 };
 
 
-const createMarker = (announcment, map) => {
+const createMarker = (announcment, layer) => {
   const { location: { lat, lng } } = announcment;
   L.marker(
     {
@@ -82,28 +95,19 @@ const createMarker = (announcment, map) => {
       draggable: false,
       icon: DEFAULT_MARKER_ICON,
     },
-  ).addTo(map).bindPopup(createCard(announcment));
+  ).addTo(layer).bindPopup(createCard(announcment));
 };
 
 const initMap = (data) => {
-  changeStateForm(false);
+  markersGroup.clearLayers();
 
-  const map = L.map('map-canvas')
-    .on('load', onMapLoad)
-    .setView({
-      lat: MAP.LOCATION.LAT,
-      lng: MAP.LOCATION.LNG,
-    }, MAP.ZOOM);
+  map.setView({
+    lat: MAP.LOCATION.LAT,
+    lng: MAP.LOCATION.LNG,
+  }, MAP.ZOOM);
 
-  L.tileLayer(
-    TILE_MAP,
-    {
-      attribution: MAP_COPYRIGHT,
-    },
-  ).addTo(map);
-
-  data.forEach((announcment) => createMarker(announcment, map));
-  createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG, map);
+  data.forEach((announcment) => createMarker(announcment, markersGroup));
+  createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG, markersGroup);
 };
 
 export { initMap };

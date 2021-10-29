@@ -1,8 +1,6 @@
-import { generateAnnouncements } from './announcement.js';
 import { initMap } from './map.js';
+import { getData } from './api.js';
+import { setFormListeners } from './form.js';
 
-const NUMBER_OFFERS = 10;
-
-const arrayAnnouncements = generateAnnouncements(NUMBER_OFFERS);
-
-initMap(arrayAnnouncements);
+getData(initMap);
+setFormListeners(initMap);
