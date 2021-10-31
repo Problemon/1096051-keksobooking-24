@@ -1,23 +1,21 @@
-import { showErrorData } from './util.js';
+const URL_GET = 'https://24.javascript.pages.academy/keksobooking/data';
+const URL_POST = 'https://24.javascript.pages.academy/keksobooking';
 
-const getData = (onSuccess) => {
-  fetch('https://24.javascript.pages.academy/keksobooking/data')
+const getData = (onSuccess, onError) => {
+  fetch(URL_GET)
     .then((response) => {
       if (response.ok) {
         return response.json();
       }
 
-      throw new Error(`${response.status}: ${response.statusText}`);
+      throw new Error();
     })
     .then((data) => onSuccess(data))
-    .catch((err) => {
-      showErrorData();
-      return err;
-    });
+    .catch(() => onError());
 };
 
 const sendData = (data, onSuccess, onError) => {
-  fetch('https://24.javascript.pages.academy/keksobooking',
+  fetch(URL_POST,
     {
       method: 'POST',
       body: data,
@@ -28,12 +26,9 @@ const sendData = (data, onSuccess, onError) => {
         return onSuccess();
       }
 
-      throw new Error (`${response.status}: ${response.statusText}`);
+      throw new Error();
     })
-    .catch((err) => {
-      onError();
-      return err;
-    });
+    .catch(() => onError());
 };
 
 export { getData, sendData };

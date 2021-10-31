@@ -86,6 +86,4 @@ const createCard = (announcement) => {
   return cardElement;
 };
 
-const createCardList = (offers) => offers.map(createCard);
-
-export { createCard, createCardList };
+export { createCard };

@@ -1,5 +1,4 @@
-import { getData, sendData } from './api.js';
-import { showSuccess, showError } from './util.js';
+import { renderPopup } from './popup.js';
 
 const MIN_LENGTH_TITLE = 30;
 const MAX_LENGTH_TITLE = 100;
@@ -27,6 +26,9 @@ const adFormGuests = adForm.querySelector('.ad-form__guests');
 const adFormCheckin = adForm.querySelector('.ad-form__checkin');
 const adFormCheckout = adForm.querySelector('.ad-form__checkout');
 const adFormReset = adForm.querySelector('.ad-form__reset');
+
+const popupSuccess = document.querySelector('#success').content.querySelector('.success');
+const popupError = document.querySelector('#error').content.querySelector('.error');
 
 
 const onClearInput = (evt) => {
@@ -98,23 +100,23 @@ const onCheckoutChange = () => {
   adFormCheckin.value = adFormCheckout.value;
 };
 
-const onResetClick = (initMap) => {
+const onResetClick = (renderMapData) => {
   mapFormFilter.reset();
   adForm.reset();
 
-  getData(initMap);
+  renderMapData();
 };
 
 const onSuccess = () => {
   adFormReset.click();
-  showSuccess();
+  renderPopup(popupSuccess);
 };
 
 const onError = () => {
-  showError();
+  renderPopup(popupError);
 };
 
-const onFormSubmit = (evt) => {
+const onFormSubmit = (sendData) => (evt) => {
   evt.preventDefault();
 
   const form = new FormData(evt.target);
@@ -141,8 +143,8 @@ const changeStateForm = (isActive) => {
   }
 };
 
-const setFormListeners = (initMap) => {
-  adForm.addEventListener('submit', onFormSubmit);
+const setFormListeners = (renderMapData, sendData) => {
+  adForm.addEventListener('submit', onFormSubmit(sendData));
 
   adFormTitleInput.addEventListener('change', onTitleChange);
   adFormTitleInput.addEventListener('input', onClearInput);
@@ -156,7 +158,7 @@ const setFormListeners = (initMap) => {
   adFormCheckin.addEventListener('change', onCheckinChange);
   adFormCheckout.addEventListener('change', onCheckoutChange);
 
-  adFormReset.addEventListener('click', () => onResetClick(initMap));
+  adFormReset.addEventListener('click', () => onResetClick(renderMapData));
 };
 
 export {changeStateForm, setFormListeners, changeAddress};

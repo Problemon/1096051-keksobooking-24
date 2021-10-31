@@ -1,4 +1,4 @@
-import { changeStateForm, changeAddress } from './form.js';
+import { changeAddress } from './form.js';
 import { createCard } from './card-offer.js';
 
 const MAP = {
@@ -8,8 +8,11 @@ const MAP = {
   },
   ZOOM: 10,
 };
+
 const TILE_MAP = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
 const MAP_COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
 const MARKER = {
   MAIN: {
     WIDTH: 52,
@@ -32,6 +35,7 @@ const MARKER = {
     },
   },
 };
+
 const MAIN_MARKER_ICON = L.icon({
   iconUrl: '../img/main-pin.svg',
   iconSize: MARKER.MAIN.getSize(),
@@ -44,22 +48,7 @@ const DEFAULT_MARKER_ICON = L.icon({
   iconAnchor: MARKER.DEFAULT.getAnchor(),
 });
 
-changeStateForm(false);
-
-const onMapLoad = () => {
-  changeStateForm(true);
-};
-
-const map = L.map('map-canvas')
-  .on('load', onMapLoad);
-
-L.tileLayer(
-  TILE_MAP,
-  {
-    attribution: MAP_COPYRIGHT,
-  },
-).addTo(map);
-
+const map = L.map('map-canvas');
 const markersGroup = L.layerGroup().addTo(map);
 
 const createMainMarker = (markerLat, markerLng, layer) => {
@@ -98,16 +87,36 @@ const createMarker = (announcment, layer) => {
   ).addTo(layer).bindPopup(createCard(announcment));
 };
 
-const initMap = (data) => {
+const setViewMap = (lat, lng, zoom) => {
+  map.setView({
+    lat,
+    lng,
+  }, zoom);
+};
+
+const renderMap = (data) => {
   markersGroup.clearLayers();
 
-  map.setView({
-    lat: MAP.LOCATION.LAT,
-    lng: MAP.LOCATION.LNG,
-  }, MAP.ZOOM);
+  setViewMap(MAP.LOCATION.LAT, MAP.LOCATION.LNG, MAP.ZOOM);
 
   data.forEach((announcment) => createMarker(announcment, markersGroup));
+
   createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG, markersGroup);
 };
 
-export { initMap };
+const initMap = (renderMapData, successLoad) => {
+  map.on('load', () => {
+    renderMapData();
+    successLoad();
+  });
+  setViewMap(MAP.LOCATION.LAT, MAP.LOCATION.LNG, MAP.ZOOM); // Событие не отробатывает без установки размеров карты.
+
+  L.tileLayer(
+    TILE_MAP,
+    {
+      attribution: MAP_COPYRIGHT,
+    },
+  ).addTo(map);
+};
+
+export { initMap, renderMap };
