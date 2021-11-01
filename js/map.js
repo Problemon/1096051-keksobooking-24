@@ -1,5 +1,5 @@
-import { changeStateForm, setFormListeners, changeAddress } from './form.js';
-import { createCardList } from './card-offer.js';
+import { changeAddress } from './form.js';
+import { createCard } from './card-offer.js';
 
 const MAP = {
   LOCATION: {
@@ -8,8 +8,11 @@ const MAP = {
   },
   ZOOM: 10,
 };
+
 const TILE_MAP = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
 const MAP_COPYRIGHT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
 const MARKER = {
   MAIN: {
     WIDTH: 52,
@@ -33,40 +36,22 @@ const MARKER = {
   },
 };
 
-changeStateForm(false);
-
-const onMapLoad = () => {
-  changeStateForm(true);
-  setFormListeners();
-};
-
-const map = L.map('map-canvas')
-  .on('load', onMapLoad)
-  .setView({
-    lat: MAP.LOCATION.LAT,
-    lng: MAP.LOCATION.LNG,
-  }, MAP.ZOOM);
-
-L.tileLayer(
-  TILE_MAP,
-  {
-    attribution: MAP_COPYRIGHT,
-  },
-).addTo(map);
-
-const mainMarkerIcon = L.icon({
+const MAIN_MARKER_ICON = L.icon({
   iconUrl: '../img/main-pin.svg',
   iconSize: MARKER.MAIN.getSize(),
   iconAnchor: MARKER.MAIN.getAnchor(),
 });
 
-const defaultMarkerIcon = L.icon({
+const DEFAULT_MARKER_ICON = L.icon({
   iconUrl: '../img/pin.svg',
   iconSize: MARKER.DEFAULT.getSize(),
   iconAnchor: MARKER.DEFAULT.getAnchor(),
 });
 
-const createMainMarker = (markerLat, markerLng) => {
+const map = L.map('map-canvas');
+const markersGroup = L.layerGroup().addTo(map);
+
+const createMainMarker = (markerLat, markerLng, layer) => {
   const marker = L.marker(
     {
       lat: markerLat,
@@ -74,9 +59,9 @@ const createMainMarker = (markerLat, markerLng) => {
     },
     {
       draggable: true,
-      icon: mainMarkerIcon,
+      icon: MAIN_MARKER_ICON,
     },
-  ).addTo(map);
+  ).addTo(layer);
 
   const onMarkerMove = () => {
     const {lat, lng} = marker.getLatLng();
@@ -88,28 +73,50 @@ const createMainMarker = (markerLat, markerLng) => {
 };
 
 
-const createMarker = (lat, lng, popup) => {
+const createMarker = (announcment, layer) => {
+  const { location: { lat, lng } } = announcment;
   L.marker(
     {
-      lat: lat,
-      lng: lng,
+      lat,
+      lng,
     },
     {
       draggable: false,
-      icon: defaultMarkerIcon,
+      icon: DEFAULT_MARKER_ICON,
     },
-  ).addTo(map).bindPopup(popup);
+  ).addTo(layer).bindPopup(createCard(announcment));
 };
 
-const initMap = (data) => {
-  const cardList = createCardList(data);
+const setViewMap = (lat, lng, zoom) => {
+  map.setView({
+    lat,
+    lng,
+  }, zoom);
+};
 
-  data.forEach((elem, index) => {
-    const {lat, lng} = elem.location;
-    createMarker(lat, lng, cardList[index], true);
+const renderMap = (data) => {
+  markersGroup.clearLayers();
+
+  setViewMap(MAP.LOCATION.LAT, MAP.LOCATION.LNG, MAP.ZOOM);
+
+  data.forEach((announcment) => createMarker(announcment, markersGroup));
+
+  createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG, markersGroup);
+};
+
+const initMap = (renderMapData, successLoad) => {
+  map.on('load', () => {
+    renderMapData();
+    successLoad();
   });
+  setViewMap(MAP.LOCATION.LAT, MAP.LOCATION.LNG, MAP.ZOOM); // Событие не отробатывает без установки размеров карты.
 
-  createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG);
+  L.tileLayer(
+    TILE_MAP,
+    {
+      attribution: MAP_COPYRIGHT,
+    },
+  ).addTo(map);
 };
 
-export { initMap };
+export { initMap, renderMap };

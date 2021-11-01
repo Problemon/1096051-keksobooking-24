@@ -1,3 +1,5 @@
+import { renderPopup } from './popup.js';
+
 const MIN_LENGTH_TITLE = 30;
 const MAX_LENGTH_TITLE = 100;
 const MAX_PRICE = 1000000;
@@ -23,6 +25,10 @@ const adFormRooms = adForm.querySelector('.ad-form__rooms');
 const adFormGuests = adForm.querySelector('.ad-form__guests');
 const adFormCheckin = adForm.querySelector('.ad-form__checkin');
 const adFormCheckout = adForm.querySelector('.ad-form__checkout');
+const adFormReset = adForm.querySelector('.ad-form__reset');
+
+const popupSuccess = document.querySelector('#success').content.querySelector('.success');
+const popupError = document.querySelector('#error').content.querySelector('.error');
 
 
 const onClearInput = (evt) => {
@@ -82,6 +88,10 @@ const onCapacityChange = () => {
   adFormGuests.reportValidity();
 };
 
+const changeAddress = (lat, lng) => {
+  adFormAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+};
+
 const onCheckinChange = () => {
   adFormCheckout.value = adFormCheckin.value;
 };
@@ -90,9 +100,30 @@ const onCheckoutChange = () => {
   adFormCheckin.value = adFormCheckout.value;
 };
 
-const changeAddress = (lat, lng) => {
-  adFormAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+const onResetClick = (renderMapData) => {
+  mapFormFilter.reset();
+  adForm.reset();
+
+  renderMapData();
 };
+
+const onSuccess = () => {
+  adFormReset.click();
+  renderPopup(popupSuccess);
+};
+
+const onError = () => {
+  renderPopup(popupError);
+};
+
+const onFormSubmit = (sendData) => (evt) => {
+  evt.preventDefault();
+
+  const form = new FormData(evt.target);
+
+  sendData(form, onSuccess, onError);
+};
+
 
 const changeStateElements = (elements, isDisabled) => {
   elements.forEach((element) => element.disabled = isDisabled);
@@ -112,7 +143,9 @@ const changeStateForm = (isActive) => {
   }
 };
 
-const setFormListeners = () => {
+const setFormListeners = (renderMapData, sendData) => {
+  adForm.addEventListener('submit', onFormSubmit(sendData));
+
   adFormTitleInput.addEventListener('change', onTitleChange);
   adFormTitleInput.addEventListener('input', onClearInput);
 
@@ -124,6 +157,8 @@ const setFormListeners = () => {
   adFormRooms.addEventListener('change', onCapacityChange);
   adFormCheckin.addEventListener('change', onCheckinChange);
   adFormCheckout.addEventListener('change', onCheckoutChange);
+
+  adFormReset.addEventListener('click', () => onResetClick(renderMapData));
 };
 
 export {changeStateForm, setFormListeners, changeAddress};

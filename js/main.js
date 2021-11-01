@@ -1,8 +1,18 @@
-import { generateAnnouncements } from './announcement.js';
-import { initMap } from './map.js';
+import { initMap, renderMap } from './map.js';
+import { getData, sendData } from './api.js';
+import { setFormListeners, changeStateForm } from './form.js';
+import { renderPopup } from './popup.js';
 
-const NUMBER_OFFERS = 10;
+const popupErrorData = document.querySelector('#error-data').content.querySelector('.error-data');
 
-const arrayAnnouncements = generateAnnouncements(NUMBER_OFFERS);
+changeStateForm(false);
 
-initMap(arrayAnnouncements);
+initMap(
+  () => getData(renderMap, () => renderPopup(popupErrorData)),
+  () => changeStateForm(true),
+);
+
+setFormListeners(
+  () => getData(renderMap, () => renderPopup(popupErrorData)),
+  sendData,
+);

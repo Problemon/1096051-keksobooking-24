@@ -230,6 +230,17 @@
       <button type="button" class="error__button">Попробовать снова</button>
     </div>
   </template>
+
+  <!-- Сообщение об ошибке загрузки данных -->
+  <template id="error-data">
+    <div class="error-data">
+      <p class="error-data__message">
+        Не удалось загрузить объявления. Попробуйте перезагрузить страницу или обратитесь в
+        <a class="error-data__link" href="https://vk.com/problemonchik">службу поддержки</a>
+      </p>
+      <button class="error-data__close"></button>
+    </div>
+  </template>
   <script src="js/main.js" type="module"></script>
   <script src="leaflet/leaflet.js"></script>
 </body>
