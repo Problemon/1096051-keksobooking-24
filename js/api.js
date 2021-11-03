@@ -1,8 +1,7 @@
-const URL_GET = 'https://24.javascript.pages.academy/keksobooking/data';
-const URL_POST = 'https://24.javascript.pages.academy/keksobooking';
+const API_URL = 'https://24.javascript.pages.academy/keksobooking';
 
 const getData = (onSuccess, onError) => {
-  fetch(URL_GET)
+  fetch(`${API_URL}/data`)
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -15,7 +14,7 @@ const getData = (onSuccess, onError) => {
 };
 
 const sendData = (data, onSuccess, onError) => {
-  fetch(URL_POST,
+  fetch(API_URL,
     {
       method: 'POST',
       body: data,
