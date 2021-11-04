@@ -1,4 +1,5 @@
 import { renderPopup } from './popup.js';
+import { sendData } from './api.js';
 
 const MIN_LENGTH_TITLE = 30;
 const MAX_LENGTH_TITLE = 100;
@@ -116,7 +117,7 @@ const onError = () => {
   renderPopup(popupError);
 };
 
-const onFormSubmit = (sendData) => (evt) => {
+const onFormSubmit = () => (evt) => {
   evt.preventDefault();
 
   const form = new FormData(evt.target);
@@ -143,7 +144,7 @@ const changeStateForm = (isActive) => {
   }
 };
 
-const setFormListeners = (renderMapData, sendData) => {
+const setFormListeners = (renderMapData) => {
   adForm.addEventListener('submit', onFormSubmit(sendData));
 
   adFormTitleInput.addEventListener('change', onTitleChange);

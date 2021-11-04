@@ -1,6 +1,6 @@
-import { changeAddress } from './form.js';
+import { changeAddress, changeStateForm } from './form.js';
 import { createCard } from './card-offer.js';
-import { debounce } from './utils/debounce.js';
+import { initFilter } from './filter.js';
 
 const MAP = {
   LOCATION: {
@@ -49,18 +49,10 @@ const DEFAULT_MARKER_ICON = L.icon({
   iconAnchor: MARKER.DEFAULT.getAnchor(),
 });
 
-const PRICE_LIST = {
-  any: [0, +Infinity],
-  middle: [10000, 50000],
-  low: [0, 10000],
-  high: [50000, +Infinity],
-};
-
 const MAX_ANNOUNCMENTS = 10;
 
 const map = L.map('map-canvas');
 const markersGroup = L.layerGroup().addTo(map);
-const mapFiltersFrom = document.querySelector('.map__filters');
 
 const createMainMarker = (markerLat, markerLng, layer) => {
   const marker = L.marker(
@@ -105,84 +97,27 @@ const setViewMap = (lat, lng, zoom) => {
   }, zoom);
 };
 
-const checkFilterType = (filterType, announcmentType) => filterType === announcmentType || filterType === 'any';
-
-const checkFilterPrice = (filterPrice, announcmentPrice) => {
-  const minPrice = PRICE_LIST[filterPrice][0];
-  const maxPrice = PRICE_LIST[filterPrice][1];
-  let isInclude = false;
-
-  if (announcmentPrice > minPrice && announcmentPrice < maxPrice) {
-    isInclude = true;
-  }
-
-  return isInclude;
-};
-
-
-const checkFilterRooms = (filterRooms, announcmentRooms) => Number(filterRooms) === announcmentRooms || filterRooms === 'any';
-
-const checkFilterGuests = (filterGuests, announcmentGuests) =>  Number(filterGuests) === announcmentGuests || filterGuests === 'any';
-
-const checkFilterFeatures = (filterFeatures, announcmentFeatures) => {
-  if (!announcmentFeatures) {
-    return false;
-  }
-
-  if (filterFeatures.length === 0) {
-    return true;
-  }
-
-  for (let i = 0; i < filterFeatures.length; i += 1) {
-    const filterFeature = filterFeatures[i].value;
-
-    if (!announcmentFeatures.includes(filterFeature)) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-const checkAnnouncment = (announcment) => {
-  const mapFilterHouseType = mapFiltersFrom.querySelector('#housing-type');
-  const mapFilterHousePrice = mapFiltersFrom.querySelector('#housing-price');
-  const mapFilterHouseRooms = mapFiltersFrom.querySelector('#housing-rooms');
-  const mapFilterHouseGuests = mapFiltersFrom.querySelector('#housing-guests');
-  const mapFilterHouseFeatures = mapFiltersFrom.querySelector('#housing-features');
-  const filterCheckedFeatures = mapFilterHouseFeatures.querySelectorAll('input:checked');
-
-  const {type, price, rooms, guests, features} = announcment.offer;
-
-  return (
-    checkFilterType(mapFilterHouseType.value, type) &&
-    checkFilterPrice(mapFilterHousePrice.value, price) &&
-    checkFilterRooms(mapFilterHouseRooms.value, rooms) &&
-    checkFilterGuests(mapFilterHouseGuests.value, guests) &&
-    checkFilterFeatures(filterCheckedFeatures, features)
-  );
-};
-
-const renderMap = (data) => {
-
-  markersGroup.clearLayers();
-
-  setViewMap(MAP.LOCATION.LAT, MAP.LOCATION.LNG, MAP.ZOOM);
-
-  data
-    .slice()
-    .filter(checkAnnouncment)
+const renderMarkers = (announcments) => {
+  announcments
     .slice(0, MAX_ANNOUNCMENTS)
     .forEach((announcment) => createMarker(announcment, markersGroup));
-
   createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG, markersGroup);
 };
 
-const initMap = (renderMapData, successLoad) => {
+const clearMarkers = () => markersGroup.clearLayers();
+
+const renderMap = (announcments) => {
+  clearMarkers();
+  renderMarkers(announcments);
+};
+
+const initMap = () => {
+
   map.on('load', () => {
-    renderMapData();
-    successLoad();
+    initFilter(renderMap);
+    changeStateForm(true);
   });
+
   setViewMap(MAP.LOCATION.LAT, MAP.LOCATION.LNG, MAP.ZOOM);
 
   L.tileLayer(
@@ -191,9 +126,6 @@ const initMap = (renderMapData, successLoad) => {
       attribution: MAP_COPYRIGHT,
     },
   ).addTo(map);
-
-  renderMapData = debounce(renderMapData);
-  mapFiltersFrom.addEventListener('change', renderMapData);
 };
 
-export { initMap, renderMap };
+export { initMap };
