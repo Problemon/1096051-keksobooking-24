@@ -101,11 +101,9 @@ const onCheckoutChange = () => {
   adFormCheckin.value = adFormCheckout.value;
 };
 
-const onResetClick = (renderMapData) => {
+const onResetClick = () => {
   mapFormFilter.reset();
   adForm.reset();
-
-  renderMapData();
 };
 
 const onSuccess = () => {
@@ -144,7 +142,7 @@ const changeStateForm = (isActive) => {
   }
 };
 
-const setFormListeners = (renderMapData) => {
+const setFormListeners = () => {
   adForm.addEventListener('submit', onFormSubmit(sendData));
 
   adFormTitleInput.addEventListener('change', onTitleChange);
@@ -159,7 +157,7 @@ const setFormListeners = (renderMapData) => {
   adFormCheckin.addEventListener('change', onCheckinChange);
   adFormCheckout.addEventListener('change', onCheckoutChange);
 
-  adFormReset.addEventListener('click', () => onResetClick(renderMapData));
+  adFormReset.addEventListener('click', onResetClick);
 };
 
 export {changeStateForm, setFormListeners, changeAddress};

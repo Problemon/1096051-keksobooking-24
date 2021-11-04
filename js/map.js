@@ -1,6 +1,8 @@
 import { changeAddress, changeStateForm } from './form.js';
 import { createCard } from './card-offer.js';
 import { initFilter } from './filter.js';
+import { getData } from './api.js';
+import { renderPopup } from './popup.js';
 
 const MAP = {
   LOCATION: {
@@ -49,35 +51,30 @@ const DEFAULT_MARKER_ICON = L.icon({
   iconAnchor: MARKER.DEFAULT.getAnchor(),
 });
 
-const MAX_ANNOUNCMENTS = 10;
+const MAX_ANNOUNCEMENTS = 10;
 
 const map = L.map('map-canvas');
 const markersGroup = L.layerGroup().addTo(map);
+const popupErrorData = document.querySelector('#error-data').content.querySelector('.error-data');
+const marker = L.marker(
+  {
+    lat: MAP.LOCATION.LAT,
+    lng: MAP.LOCATION.LNG,
+  },
+  {
+    draggable: true,
+    icon: MAIN_MARKER_ICON,
+  },
+).addTo(map);
 
-const createMainMarker = (markerLat, markerLng, layer) => {
-  const marker = L.marker(
-    {
-      lat: markerLat,
-      lng: markerLng,
-    },
-    {
-      draggable: true,
-      icon: MAIN_MARKER_ICON,
-    },
-  ).addTo(layer);
-
-  const onMarkerMove = () => {
-    const {lat, lng} = marker.getLatLng();
-    changeAddress(lat, lng);
-  };
-
-  onMarkerMove();
-  marker.on('move', onMarkerMove);
+const refreshAddressInput = () => {
+  const {lat, lng} = marker.getLatLng();
+  changeAddress(lat, lng);
 };
 
 
-const createMarker = (announcment, layer) => {
-  const { location: { lat, lng } } = announcment;
+const createMarker = (announcement, layer) => {
+  const { location: { lat, lng } } = announcement;
   L.marker(
     {
       lat,
@@ -87,7 +84,7 @@ const createMarker = (announcment, layer) => {
       draggable: false,
       icon: DEFAULT_MARKER_ICON,
     },
-  ).addTo(layer).bindPopup(createCard(announcment));
+  ).addTo(layer).bindPopup(createCard(announcement));
 };
 
 const setViewMap = (lat, lng, zoom) => {
@@ -97,24 +94,29 @@ const setViewMap = (lat, lng, zoom) => {
   }, zoom);
 };
 
-const renderMarkers = (announcments) => {
-  announcments
-    .slice(0, MAX_ANNOUNCMENTS)
-    .forEach((announcment) => createMarker(announcment, markersGroup));
-  createMainMarker(MAP.LOCATION.LAT, MAP.LOCATION.LNG, markersGroup);
+const renderMarkers = (announcements) => {
+  announcements.forEach((announcement) => createMarker(announcement, markersGroup));
 };
 
 const clearMarkers = () => markersGroup.clearLayers();
 
-const renderMap = (announcments) => {
+const refreshMap = (announcements) => {
   clearMarkers();
-  renderMarkers(announcments);
+  renderMarkers(announcements);
+  refreshAddressInput();
+};
+
+const onMapLoad = (announcements) => {
+  renderMarkers(announcements.slice(0, MAX_ANNOUNCEMENTS));
+  initFilter(announcements);
 };
 
 const initMap = () => {
 
   map.on('load', () => {
-    initFilter(renderMap);
+    getData(onMapLoad, () => renderPopup(popupErrorData)),
+    marker.on('move', refreshAddressInput);
+
     changeStateForm(true);
   });
 
@@ -128,4 +130,4 @@ const initMap = () => {
   ).addTo(map);
 };
 
-export { initMap };
+export { initMap, refreshMap };

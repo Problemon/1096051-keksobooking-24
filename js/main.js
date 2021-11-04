@@ -1,6 +1,7 @@
 import { initMap } from './map.js';
-import { changeStateForm } from './form.js';
+import { changeStateForm, setFormListeners } from './form.js';
 
 changeStateForm(false);
 
 initMap();
+setFormListeners();

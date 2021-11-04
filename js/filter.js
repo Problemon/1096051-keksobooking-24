@@ -1,14 +1,9 @@
 import { debounce } from './utils/debounce.js';
-import { getData } from './api.js';
-import { renderPopup } from './popup.js';
-import { setFormListeners } from './form.js';
+import { refreshMap } from './map.js';
 
-const PRICE_LIST = {
-  any: [0, +Infinity],
-  middle: [10000, 50000],
-  low: [0, 10000],
-  high: [50000, +Infinity],
-};
+const DEFAULT_VALUE = 'any';
+
+const MAX_ANNOUNCEMENTS = 10;
 
 const mapFiltersFrom = document.querySelector('.map__filters');
 const mapFilterHouseType = mapFiltersFrom.querySelector('#housing-type');
@@ -16,20 +11,32 @@ const mapFilterHousePrice = mapFiltersFrom.querySelector('#housing-price');
 const mapFilterHouseRooms = mapFiltersFrom.querySelector('#housing-rooms');
 const mapFilterHouseGuests = mapFiltersFrom.querySelector('#housing-guests');
 const mapFilterHouseFeatures = mapFiltersFrom.querySelector('#housing-features');
-const popupErrorData = document.querySelector('#error-data').content.querySelector('.error-data');
 
-const checkFilterType = (filterType, announcmentType) => filterType === announcmentType || filterType === 'any';
+const priceList = {
+  any: [0, +Infinity],
+  middle: [10000, 50000],
+  low: [0, 10000],
+  high: [50000, +Infinity],
+};
+
+const checkFilterType = (filterType, announcmentType) => (
+  filterType === announcmentType || filterType === DEFAULT_VALUE
+);
 
 const checkFilterPrice = (filterPrice, announcmentPrice) => {
-  const [minPrice, maxPrice]  = PRICE_LIST[filterPrice];
+  const [minPrice, maxPrice]  = priceList[filterPrice];
 
   return announcmentPrice > minPrice && announcmentPrice < maxPrice;
 };
 
 
-const checkFilterRooms = (filterRooms, announcmentRooms) => Number(filterRooms) === announcmentRooms || filterRooms === 'any';
+const checkFilterRooms = (filterRooms, announcmentRooms) => (
+  Number(filterRooms) === announcmentRooms || filterRooms === DEFAULT_VALUE
+);
 
-const checkFilterGuests = (filterGuests, announcmentGuests) =>  Number(filterGuests) === announcmentGuests || filterGuests === 'any';
+const checkFilterGuests = (filterGuests, announcmentGuests) => (
+  Number(filterGuests) === announcmentGuests || filterGuests === DEFAULT_VALUE
+);
 
 const checkFilterFeatures = (filterFeatures, announcmentFeatures) => {
   if (!announcmentFeatures) {
@@ -65,20 +72,16 @@ const checkAnnouncment = (announcment) => {
   );
 };
 
-const getFilterdAnnouncments = (data) => data
-  .filter(checkAnnouncment);
+const filterAnnouncments = (data) => data.filter(checkAnnouncment).slice(0, MAX_ANNOUNCEMENTS);
 
-const initFilter = (renderMap) => {
-  const renderMapDebounce = debounce(
-    () => getData(
-      (data) => renderMap(getFilterdAnnouncments(data)),
-      () => renderPopup(popupErrorData)),
-  );
+const onFilterChange = (data) => {
+  const filteredAnnouncements = filterAnnouncments(data);
+  refreshMap(filteredAnnouncements);
+};
 
-  setFormListeners(renderMapDebounce);
-
-  mapFiltersFrom.addEventListener('change', renderMapDebounce);
-  renderMapDebounce();
+const initFilter = (data) => {
+  mapFiltersFrom.addEventListener('change', debounce(() => onFilterChange(data)));
+  mapFiltersFrom.addEventListener('reset', debounce(() => onFilterChange(data)));
 };
 
 export { initFilter };
