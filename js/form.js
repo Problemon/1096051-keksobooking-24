@@ -1,4 +1,5 @@
 import { renderPopup } from './popup.js';
+import { sendData } from './api.js';
 
 const MIN_LENGTH_TITLE = 30;
 const MAX_LENGTH_TITLE = 100;
@@ -100,11 +101,9 @@ const onCheckoutChange = () => {
   adFormCheckin.value = adFormCheckout.value;
 };
 
-const onResetClick = (renderMapData) => {
+const onResetClick = () => {
   mapFormFilter.reset();
   adForm.reset();
-
-  renderMapData();
 };
 
 const onSuccess = () => {
@@ -116,7 +115,7 @@ const onError = () => {
   renderPopup(popupError);
 };
 
-const onFormSubmit = (sendData) => (evt) => {
+const onFormSubmit = () => (evt) => {
   evt.preventDefault();
 
   const form = new FormData(evt.target);
@@ -143,7 +142,7 @@ const changeStateForm = (isActive) => {
   }
 };
 
-const setFormListeners = (renderMapData, sendData) => {
+const setFormListeners = () => {
   adForm.addEventListener('submit', onFormSubmit(sendData));
 
   adFormTitleInput.addEventListener('change', onTitleChange);
@@ -158,7 +157,7 @@ const setFormListeners = (renderMapData, sendData) => {
   adFormCheckin.addEventListener('change', onCheckinChange);
   adFormCheckout.addEventListener('change', onCheckoutChange);
 
-  adFormReset.addEventListener('click', () => onResetClick(renderMapData));
+  adFormReset.addEventListener('click', onResetClick);
 };
 
 export {changeStateForm, setFormListeners, changeAddress};
