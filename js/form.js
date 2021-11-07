@@ -13,6 +13,7 @@ const MIN_PRICE_LIST = {
 };
 const MAX_ROOMS = 100;
 const NOT_FOR_GUESTS = 0;
+const FILE_TYPES = ['png', 'jpg', 'jpeg', 'webp'];
 
 const mapFormFilter = document.querySelector('.map__filters');
 const mapFilters = mapFormFilter.querySelectorAll('fieldset, select');
@@ -27,13 +28,49 @@ const adFormGuests = adForm.querySelector('.ad-form__guests');
 const adFormCheckin = adForm.querySelector('.ad-form__checkin');
 const adFormCheckout = adForm.querySelector('.ad-form__checkout');
 const adFormReset = adForm.querySelector('.ad-form__reset');
+const adFormAvatarInput = adForm.querySelector('#avatar');
+const adFormAvatar = adForm.querySelector('.ad-form-header__preview').querySelector('img');
+const adFormImagesInput = adForm.querySelector('#images');
+const adFormImagesContainer = adForm.querySelector('.ad-form__photo');
 
 const popupSuccess = document.querySelector('#success').content.querySelector('.success');
 const popupError = document.querySelector('#error').content.querySelector('.error');
 
-
 const onClearInput = (evt) => {
   evt.target.setCustomValidity('');
+};
+
+const checkPictureType = (fileName) => FILE_TYPES.some((type) => fileName.endsWith(type));
+
+const onAvatarChoice = (img) => {
+  const file = adFormAvatarInput.files[0];
+  const fileName = file.name.toLowerCase();
+
+  if (checkPictureType(fileName)) {
+    img.src = URL.createObjectURL(file);
+  }
+};
+
+const createNodeImg = (container) => {
+  const img = document.createElement('img');
+  container.append(img);
+
+  return img;
+};
+
+const onImagesChoice = () => {
+  const files = adFormImagesInput.files;
+
+  for (const file of files) {
+    const fileName = file.name.toLowerCase();
+    const img = createNodeImg(adFormImagesContainer);
+
+    if (checkPictureType(fileName)) {
+      img.src = URL.createObjectURL(file);
+      img.width = '70';
+      img.height = '70';
+    }
+  }
 };
 
 const onTitleChange = () => {
@@ -104,6 +141,8 @@ const onCheckoutChange = () => {
 const onResetClick = () => {
   mapFormFilter.reset();
   adForm.reset();
+  adFormImagesContainer.innerHTML = '';
+  adFormAvatar.src = 'img/muffin-grey.svg';
 };
 
 const onSuccess = () => {
@@ -144,6 +183,9 @@ const changeStateForm = (isActive) => {
 
 const setFormListeners = () => {
   adForm.addEventListener('submit', onFormSubmit(sendData));
+  adFormImagesInput.addEventListener('change', () => onImagesChoice(adFormImagesContainer));
+  adFormAvatarInput.addEventListener('change', () => onAvatarChoice(adFormAvatar));
+
 
   adFormTitleInput.addEventListener('change', onTitleChange);
   adFormTitleInput.addEventListener('input', onClearInput);

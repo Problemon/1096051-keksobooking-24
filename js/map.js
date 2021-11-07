@@ -109,6 +109,7 @@ const refreshMap = (announcements) => {
 const onMapLoad = (announcements) => {
   renderMarkers(announcements.slice(0, MAX_ANNOUNCEMENTS));
   initFilter(announcements);
+  refreshAddressInput();
 };
 
 const initMap = () => {
