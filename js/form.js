@@ -14,6 +14,11 @@ const MIN_PRICE_LIST = {
 const MAX_ROOMS = 100;
 const NOT_FOR_GUESTS = 0;
 const FILE_TYPES = ['png', 'jpg', 'jpeg', 'webp'];
+const IMG = {
+  WIDTH: 70,
+  HEIGHT: 70,
+};
+const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 
 const mapFormFilter = document.querySelector('.map__filters');
 const mapFilters = mapFormFilter.querySelectorAll('fieldset, select');
@@ -42,7 +47,7 @@ const onClearInput = (evt) => {
 
 const checkPictureType = (fileName) => FILE_TYPES.some((type) => fileName.endsWith(type));
 
-const onAvatarChoice = (img) => {
+const onAvatarChange = (img) => {
   const file = adFormAvatarInput.files[0];
   const fileName = file.name.toLowerCase();
 
@@ -67,8 +72,9 @@ const onImagesChoice = () => {
 
     if (checkPictureType(fileName)) {
       img.src = URL.createObjectURL(file);
-      img.width = '70';
-      img.height = '70';
+      img.classList.add('ad-form__img');
+      img.width = IMG.WIDTH;
+      img.height =IMG.HEIGHT;
     }
   }
 };
@@ -142,7 +148,7 @@ const onResetClick = () => {
   mapFormFilter.reset();
   adForm.reset();
   adFormImagesContainer.innerHTML = '';
-  adFormAvatar.src = 'img/muffin-grey.svg';
+  adFormAvatar.src = DEFAULT_AVATAR;
 };
 
 const onSuccess = () => {
@@ -184,7 +190,7 @@ const changeStateForm = (isActive) => {
 const setFormListeners = () => {
   adForm.addEventListener('submit', onFormSubmit(sendData));
   adFormImagesInput.addEventListener('change', () => onImagesChoice(adFormImagesContainer));
-  adFormAvatarInput.addEventListener('change', () => onAvatarChoice(adFormAvatar));
+  adFormAvatarInput.addEventListener('change', () => onAvatarChange(adFormAvatar));
 
 
   adFormTitleInput.addEventListener('change', onTitleChange);

@@ -308,6 +308,10 @@ fieldset {
   background-color: #dadada;
 }
 
+.ad-form-header__avatar {
+  object-fit: cover;
+}
+
 .ad-form__field {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -582,7 +586,10 @@ fieldset {
   margin-bottom: 10px;
 
   flex-grow: 1;
+}
 
+.ad-form__img {
+  object-fit: cover;
   background-color: #e4e4de;
   border-radius: 5px;
 }
