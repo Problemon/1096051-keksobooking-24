@@ -93,12 +93,20 @@ const onTitleChange = () => {
   adFormTitleInput.reportValidity();
 };
 
+const getMinPrice = () => MIN_PRICE_LIST[adFormType.value];
 
-const onPriceChange = () => {
-  const minPrice = MIN_PRICE_LIST[adFormType.value];
-  const price = adFormPriceInput.value;
+const changeStylePrice = () => {
+  const minPrice = getMinPrice();
 
   adFormPriceInput.placeholder = minPrice;
+  adFormPriceInput.min = minPrice;
+};
+
+const onPriceChange = () => {
+  const minPrice = getMinPrice();
+  const price = adFormPriceInput.value;
+
+  changeStylePrice();
 
   if (price > MAX_PRICE) {
     adFormPriceInput.setCustomValidity(`Максимальная цена ${MAX_PRICE}`);
@@ -147,7 +155,7 @@ const onCheckoutChange = () => {
 const onResetClick = () => {
   mapFormFilter.reset();
   adForm.reset();
-  onPriceChange();
+  changeStylePrice();
   adFormImagesContainer.innerHTML = '';
   adFormAvatar.src = DEFAULT_AVATAR;
 };
