@@ -1,15 +1,15 @@
 const renderPopup = (node) => {
-  function onDocumentKeyDown (evt) {
+  const onDocumentKeyDown = (evt) => {
     if (evt.key === 'Esc' || evt.key === 'Escape') {
       node.remove();
       document.removeEventListener('keydown', onDocumentKeyDown);
     }
-  }
+  };
 
-  function onPopupClick () {
+  const onPopupClick = () => {
     node.remove();
     document.removeEventListener('keydown', onDocumentKeyDown);
-  }
+  };
 
   document.body.append(node);
 

@@ -147,6 +147,7 @@ const onCheckoutChange = () => {
 const onResetClick = () => {
   mapFormFilter.reset();
   adForm.reset();
+  onPriceChange();
   adFormImagesContainer.innerHTML = '';
   adFormAvatar.src = DEFAULT_AVATAR;
 };
@@ -170,7 +171,13 @@ const onFormSubmit = () => (evt) => {
 
 
 const changeStateElements = (elements, isDisabled) => {
-  elements.forEach((element) => element.disabled = isDisabled);
+  elements.forEach((element) => {
+    if (isDisabled) {
+      element.disabled;
+    } else {
+      element.enabled;
+    }
+  });
 };
 
 const changeStateForm = (isActive) => {
